@@ -7,7 +7,7 @@ var zmq = require('zmq'),
     serverIP = '192.168.0.181',
     port = '3000',
     executingCommandList = {},
-    spawn = require('child_process').spawn, 
+    spawnCommand = require('spawn-command')
     service = {'ServerConnected': ServerConnected,
                'ServerCommand': ServerCommand,
                'ServerTerminate': ServerTerminate};
@@ -55,7 +55,7 @@ function pushExit(commandID, exitCode){
 }
 
 function ServerCommand(obj){
-  var command = spawn(obj['command'], obj['parameter']);
+  var command = spawnCommand(obj['command']);
 
   //console.log('[command] ' + obj['command'] + ' ' + obj['parameter'].toString());
  
