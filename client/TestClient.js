@@ -75,7 +75,7 @@ function ServerCommand(obj){
 
   command.on('exit', function (code) {
     console.log('child process exited with code ' + code);
-    pushExit(commandID, exitCode);
+    pushExit(obj['commandID'], code);
   }); 
 }
 
