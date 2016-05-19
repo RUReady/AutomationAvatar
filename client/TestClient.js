@@ -43,6 +43,17 @@ function pushStderr(commandID, stderrMessage){
   push.send(JSON.stringify(userObj));
 }
 
+function pushExit(commandID, exitCode){
+  var userObj = {};
+
+  userObj['type'] = 'ClientCommandExit';
+  userObj['clientID'] = os.hostname();
+  userObj['commandID'] = commandID;
+  userObj['exitCode'] = exitCode;
+
+  push.send(JSON.stringify(userObj));
+}
+
 function ServerCommand(obj){
   var command = spawn(obj['command'], obj['parameter']);
 
@@ -64,6 +75,7 @@ function ServerCommand(obj){
 
   command.on('exit', function (code) {
     console.log('child process exited with code ' + code);
+    pushExit(commandID, exitCode);
   }); 
 }
 
