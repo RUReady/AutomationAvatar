@@ -7,9 +7,11 @@ var zmq = require('zmq'),
     connectedCallback,
     stdoutCallback,
     stderrCallback,
+    commandExitCallback,
     service = {'ClientConnected': ClientConnected,
                'ClientStdout': ClientStdout,
-               'ClientStderr': ClientStderr};
+               'ClientStderr': ClientStderr,
+               'ClientCommandExit': ClientCommandExit};
  
 function ClientConnected(obj){
   var push = zmq.socket('push');
@@ -42,6 +44,13 @@ function ClientStderr(obj){
 
   if(stderrCallback)
     stderrCallback(obj);
+}
+
+function ClientCommandExit(obj){
+  console.log('================CommandExit(clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + ', exitCode: ' + obj['exitCode'] + '================');
+
+  if(commandExitCallback)
+    commandExitCallback(obj);
 }
 
 function pushCommand(clientID, commandID, command, parameters){
@@ -88,10 +97,11 @@ function startTestServer(){
   });
 }
 
-function setTestServerCallback(connectedCB, stdoutCB, stderrCB){
+function setTestServerCallback(connectedCB, stdoutCB, stderrCB, commandExitCB){
   connectedCallback = connectedCB;
   stdoutCallback = stdoutCB;
   stderrCallback = stderrCB;
+  commandExitCallback = commandExitCB;
 }
 
 exports.startTestServer = startTestServer;
