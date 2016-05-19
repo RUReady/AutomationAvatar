@@ -31,7 +31,7 @@ function ClientConnected(obj){
 }
 
 function ClientStdout(obj){
-  console.log('================Stdout(clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + '================');
+  console.log('[stdout] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID']);
   console.log(obj['message']);
 
   if(stdoutCallback)
@@ -39,7 +39,7 @@ function ClientStdout(obj){
 }
 
 function ClientStderr(obj){
-  console.log('================Stderr(clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + '================');
+  console.log('[stderr] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID']);
   console.log(obj['message']);
 
   if(stderrCallback)
@@ -47,20 +47,19 @@ function ClientStderr(obj){
 }
 
 function ClientCommandExit(obj){
-  console.log('================CommandExit(clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + ', exitCode: ' + obj['exitCode'] + '================');
+  console.log('[commandExit] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + ', exitCode: ' + obj['exitCode']);
 
   if(commandExitCallback)
     commandExitCallback(obj);
 }
 
-function pushCommand(clientID, commandID, command, parameters){
+function pushCommand(clientID, commandID, command){
   var userObj = {};
 
   userObj['type'] = 'ServerCommand';
   userObj['clientID'] = clientID;
   userObj['commandID'] = commandID;
   userObj['command'] = command;
-  userObj['parameters'] = parameters;
 
   testClientList[clientID].send(JSON.stringify(userObj));
 }
