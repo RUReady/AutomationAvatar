@@ -12,8 +12,8 @@ function connectedCallback(obj){
 }
 
 function stdoutCallback(obj){
-  console.log('================stdout================');
-  console.log(obj);
+  //console.log('================stdout================');
+  //console.log(obj);
 }
 
 function stderrCallback(obj){
@@ -26,7 +26,7 @@ function commandExitCallback(obj){
 }
 
 function mainFunction(){
-  pushCommand('pull', '#1', 'netstat', ['tln']);
+  pushCommand('pull', '#1', 'apt-get -y install docker');
 }
 
 testServer.setTestServerCallback(connectedCallback, stdoutCallback, stderrCallback, commandExitCallback);
