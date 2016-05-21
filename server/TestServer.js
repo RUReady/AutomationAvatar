@@ -8,16 +8,23 @@ var zmq = require('zmq'),
     stdoutCallback,
     stderrCallback,
     commandExitCallback,
+    pullCloseCallback,
     service = {'ClientConnected': ClientConnected,
                'ClientStdout': ClientStdout,
                'ClientStderr': ClientStderr,
                'ClientCommandExit': ClientCommandExit};
  
 function ClientConnected(obj){
-  var push = zmq.socket('push');
+  var push = zmq.socket('push'), close = false;
 
   push.connect('tcp://' + obj['ip'] + ':' + port);
   testClientList[obj['clientID']] = push;
+
+  push.on('close', function(fd, ep){
+    pullCloseCallback(obj['clientID']);
+  });
+
+  push.monitor(500, 0);
 
   var userObj = {};
 
@@ -96,11 +103,12 @@ function startTestServer(){
   });
 }
 
-function setTestServerCallback(connectedCB, stdoutCB, stderrCB, commandExitCB){
+function setTestServerCallback(connectedCB, stdoutCB, stderrCB, commandExitCB, pullCloseCB){
   connectedCallback = connectedCB;
   stdoutCallback = stdoutCB;
   stderrCallback = stderrCB;
   commandExitCallback = commandExitCB;
+  pullCloseCallback = pullCloseCB;
 }
 
 exports.startTestServer = startTestServer;
