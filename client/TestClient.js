@@ -63,13 +63,13 @@ function ServerCommand(obj){
 
   command.stdout.setEncoding('utf8');
   command.stdout.on('data', function (data) {
-    console.log('[stdout] ' + data);
+    console.log(data);
     pushStdout(obj['commandID'], data);
   });
 
   command.stderr.setEncoding('utf8');
   command.stderr.on('data', function (data) {
-    console.log('[stderr] ' + data);
+    console.log(data);
     pushStderr(obj['commandID'], data);
   });
 
@@ -114,6 +114,10 @@ pull.on('message', function(msg){
   }
 });
 
-push.monitor(500, 0);
-connectToTestServer();
+push.on('connect', function(msg){
+  connectToTestServer();
+});
 
+push.monitor(500, 0);
+
+connectToTestServer();
