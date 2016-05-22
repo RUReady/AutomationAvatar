@@ -69,7 +69,7 @@ function ServerCommand(obj){
 
   command.stderr.setEncoding('utf8');
   command.stderr.on('data', function (data) {
-    console.log(data);
+    //console.log(data);
     pushStderr(obj['commandID'], data);
   });
 
