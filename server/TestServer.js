@@ -38,23 +38,23 @@ function ClientConnected(obj){
 }
 
 function ClientStdout(obj){
-  console.log('[stdout] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID']);
-  console.log(obj['message']);
+  //console.log('[stdout] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID']);
+  //console.log(obj['message']);
 
   if(stdoutCallback)
     stdoutCallback(obj);
 }
 
 function ClientStderr(obj){
-  console.log('[stderr] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID']);
-  console.log(obj['message']);
+  //console.log('[stderr] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID']);
+  //console.log(obj['message']);
 
   if(stderrCallback)
     stderrCallback(obj);
 }
 
 function ClientCommandExit(obj){
-  console.log('[commandExit] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + ', exitCode: ' + obj['exitCode']);
+  //console.log('[commandExit] (clientID: ' + obj['clientID'] + ', commandID: ' + obj['commandID'] + ', exitCode: ' + obj['exitCode']);
 
   if(commandExitCallback)
     commandExitCallback(obj);
