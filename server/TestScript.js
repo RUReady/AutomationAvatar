@@ -8,35 +8,39 @@ var testServer = require('./TestServer'),
     pushCommand = testServer.pushCommand,
     pushKill = testServer.pushKill,
     clientStatus = {},
-    outputFiles = [],
+    stdoutString = {},
     userCounter = 0,
     commandIndex = 0,
     commandClientFinishCounter = 0;
 
 function compare(){
-  outputFiles.forEach(function(obj){
-    var contents = fs.readFileSync(obj['filename']).toString(),
+  for(var employee in stdoutString[config.commands[commandIndex]['commandID']]){
+    var contents = stdoutString[config.commands[commandIndex]['commandID']][employee],
         oldExpectIndex = -2;
 
     for(var index in config.commands[commandIndex]['expects']){
       var expect = config.commands[commandIndex]['expects'][index];
 
       if(contents.indexOf(expect) === -1){
-        console.log('employee:' + obj['employee'] + ', filename:' + obj['filename'] + ', expect:' + expect + ' failed');
+        console.log('employee:' + employee + ', commandID:' + config.commands[commandIndex]['commandID'] + ', expect:' + expect + ' failed');
+        break;
       } 
       else if(contents.indexOf(expect) < oldExpectIndex){
-        console.log('employee:' + obj['employee'] + ', filename:' + obj['filename'] + ', expect:' + expect + ' failed');
+        console.log('employee:' + employee + ', commandID:' + config.commands[commandIndex]['commandID'] + ', expect:' + expect + ' failed');
+        break;
       } 
       else if(Number(index) === (config.commands[commandIndex]['expects'].length - 1)){
-        console.log('employee:' + obj['employee'] + ', filename:' + obj['filename'] + ', expect:' + expect + ' PASS!!!');
+        console.log('employee:' + employee + ', commandID:' + config.commands[commandIndex]['commandID'] + ' PASS!!!');
       } 
 
       oldExpectIndex = contents.indexOf(expect);
     }
-  });
+  }
 }
 
 function pullCloseCallback(clientID){
+  if(typeof obj === 'undefined')
+    return ;
   if(config.client.indexOf(obj['clientID']) === -1)
     return ;
   
@@ -68,6 +72,7 @@ function stdoutCallback(obj){
   var now = new Date();
   var context = '[' + date.format(now, 'YYYY-MM-DD_HH:mm:ss') + '] ' + obj['message'];
 
+  stdoutString[obj['commandID']][obj['clientID']] = stdoutString[obj['commandID']][obj['clientID']] + context;
   fs.appendFile(filename + obj['clientID'] + '_' + obj['commandID'], context, function (err) {});
 }
 
@@ -92,15 +97,15 @@ function commandExitCallback(obj){
 
 function mainFunction(){
   var now = new Date();
-  outputFiles = [];
+  stdoutString[config.commands[commandIndex]['commandID']] = {};
 
   filename = date.format(now, 'YYYY-MM-DD_HH:mm:ss_');
 
-  console.log(config.commands[commandIndex]['command']);
+  console.log('<<<<< ' + config.commands[commandIndex]['command'] + ' >>>>>');
 
   config.commands[commandIndex]['employees'].forEach(function(employee){
     pushCommand(employee, config.commands[commandIndex]['commandID'], config.commands[commandIndex]['command']);
-    outputFiles.push({employee: employee, filename: filename + employee + '_' + config.commands[commandIndex]['commandID']}); 
+    stdoutString[config.commands[commandIndex]['commandID']][employee] = '';
   });
 }
 
